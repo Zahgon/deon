@@ -19,7 +19,7 @@ from .formats import EXTENSIONS
     default=None,
     type=str,
     help='Output format. Default is "markdown". '
-    + "Can be one of [{}]. ".format(", ".join(EXTENSIONS.values()))
+    + "Can be one of [{}]. ".format(", ".join(["ascii", "html", "jupyter", "jupyter-multicell", "markdown", "rmarkdown", "rst"]))
     + "Ignored and file extension used if --output is passed.",
 )
 @click.option(
@@ -27,7 +27,7 @@ from .formats import EXTENSIONS
     "-o",
     default=None,
     type=click.Path(),
-    help="Output file path. Extension can be one of [{}]. ".format(", ".join(EXTENSIONS.keys()))
+    help="Output file path. Extension can be one of [{}]. ".format(", ".join([".txt", ".html", ".ipynb", ".md", ".rmd", ".rst"]))
     + "The checklist is appended if the file exists.",
 )
 @click.option(
@@ -53,26 +53,7 @@ def main(checklist, output_format, output, overwrite, multicell):
     The checklist will be printed to standard output by default. Use the --output option to write
     to a file instead.
     """
-    try:
-        result = create(checklist, output_format, output, overwrite, multicell)
-    except ExtensionException:
-        with click.get_current_context() as ctx:
-            msg = "Output requires a file name with a supported extension.\n\n"
-            raise click.ClickException(msg + ctx.get_help())
-    except FormatException:
-        with click.get_current_context() as ctx:
-            msg = f"File format {output_format} is not supported.\n\n"
-            raise click.ClickException(msg + ctx.get_help())
-    except MulticellException:
-        with click.get_current_context() as ctx:
-            msg = f"Multicell is for use with jupyter format only. You used: {output_format}.\n\n"
-            raise click.ClickException(msg + ctx.get_help())
-    else:
-        # write output or print to stdout
-        if result:
-            click.echo(result)
-        else:
-            click.echo(f"Checklist successfully written to file {output}.")
+    pass
 
 
 if __name__ == "__main__":
